@@ -6,7 +6,7 @@ namespace Task2
 {
     public static class UserFlow
     {
-        public static DateTime? Flow()
+        public static DateTime? GetDate()
         {
             try
             {
@@ -26,7 +26,7 @@ namespace Task2
                 string answer = Console.ReadLine().ToLower();
                 if (answer == "y")
                 {
-                    return Flow();
+                    return GetDate();
                 }
                 else
                 {

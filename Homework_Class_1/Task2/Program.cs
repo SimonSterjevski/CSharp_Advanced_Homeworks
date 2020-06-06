@@ -9,18 +9,10 @@ namespace Task2
         {
             while (true)
             {
-                DateTime? date = UserFlow.Flow();
+                DateTime? date = UserFlow.GetDate();
                 if (date != null)
                 {
-                    Console.Clear();
-                    if (Holiday.Holidays.Contains(date.Value) || date.Value.DayOfWeek == DayOfWeek.Saturday || date.Value.DayOfWeek == DayOfWeek.Sunday)
-                    {
-                        Console.WriteLine($"You don't have to go to work on {date.Value.DayOfWeek}, {date.Value.Day}.{date.Value.Month}");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Lucky you! You have to work on {date.Value.DayOfWeek}, {date.Value.Day}.{date.Value.Month}");
-                    }
+                    Holiday.WorkingDayInfo(date);
                     Console.WriteLine("Press Y if you want to check another date? Any other key to leave");
                     string answer = Console.ReadLine().ToLower();
                     if (answer != "y")

@@ -6,26 +6,27 @@ namespace Task3
     {
         static void Main(string[] args)
         {
-            string answer = null;
-            while (answer != "3")
+            int answer = 0;
+            while (answer != 3)
             {
                 Console.WriteLine("Rock - Paper - Scissors");
                 Console.WriteLine("1)Play  2)Stats  3)Exit");
-                answer = Console.ReadLine();
+                bool isNum = int.TryParse(Console.ReadLine(), out answer);
                 Console.Clear();
-                switch (answer)
-                {
-                    case "1":
-                        ServiceMethods.Play();
-                        break;
-                    case "2":
-                        ServiceMethods.SeeStats();
-                        break;
-                    case "3":
-                        break;
-                    default:
-                        break;
-                }
+                    switch (answer)
+                    {
+                        case 1:
+                            ServiceMethods.Play();
+                            break;
+                        case 2:
+                            ServiceMethods.SeeStats();
+                            break;
+                        case 3:
+                            break;
+                        default:
+                            break;
+                    }
+                
             }
             
         }

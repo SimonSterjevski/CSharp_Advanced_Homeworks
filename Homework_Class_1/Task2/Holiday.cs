@@ -19,5 +19,17 @@ namespace Task2
             new DateTime(2020, 12, 8),
         };
 
+        public static void WorkingDayInfo(DateTime? date)
+        {
+            Console.Clear();
+            if (Holidays.Contains(date.Value) || date.Value.DayOfWeek == DayOfWeek.Saturday || date.Value.DayOfWeek == DayOfWeek.Sunday)
+            {
+                Console.WriteLine($"You don't have to go to work on {date.Value.DayOfWeek}, {date.Value.Day}.{date.Value.Month}");
+            }
+            else
+            {
+                Console.WriteLine($"Lucky you! You have to work on {date.Value.DayOfWeek}, {date.Value.Day}.{date.Value.Month}");
+            }
+        }
     }
 }
