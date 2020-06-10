@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 
@@ -16,11 +17,11 @@ namespace AuthorStarter
 
 
             var books = authors.SelectMany(a => a.Books).ToList();
-            var listByTitle = from book in books
-                              group book by book.Title;
+            var listByID = from book in books
+                           group book by book.ID;
 
             Console.WriteLine("How many books are collaborations (have more than one author)?");
-            var duplicateList = from book in listByTitle
+            var duplicateList = from book in listByID
                                 where book.Count() > 1
                                 select book;
             Console.WriteLine($"{duplicateList.Count()} books have more than author.");
@@ -28,21 +29,24 @@ namespace AuthorStarter
 
 
             Console.WriteLine("Which book has the most authors (and how many)?");
-            var orderedListByTitle = from book in listByTitle
+            var orderedListByTitle = from book in listByID
                                      orderby book.Count()
                                      select book;
             var dictionaryBooks = orderedListByTitle.ToDictionary(x => x.Key, y => y.Count());
-            Console.WriteLine($"The book {dictionaryBooks.LastOrDefault().Key} has {dictionaryBooks.LastOrDefault().Value} authors.");
+            var bookTitle = from book in books
+                            where book.ID == dictionaryBooks.LastOrDefault().Key
+                            select book.Title;
+            Console.WriteLine($"The book {bookTitle.FirstOrDefault()} has {dictionaryBooks.LastOrDefault().Value} authors.");
             Console.WriteLine("------------------------------");
 
 
             Console.WriteLine("What author wrote most collaborations?");
-            var duplicateTitles = from book in duplicateList
-                                  select book.Key;
-            var duplicateListTitles = duplicateTitles.ToList();
+            var duplicateIDs = from book in duplicateList
+                               select book.Key;
+            var duplicateListIDs = duplicateIDs.ToList();
             var authorsWithCollaborations = from author in authors
                                             from book in author.Books
-                                            where duplicateListTitles.Contains(book.Title)
+                                            where duplicateListIDs.Contains(book.ID)
                                             group author by author.Name;
             var orderedListByCollaborations = from author in authorsWithCollaborations
                                               orderby author.Count()
@@ -55,7 +59,7 @@ namespace AuthorStarter
             //           from book in author.Books
             //           select book;
             //var proba = from book in test.ToList()
-            //            where duplicateListTitles.Contains(book.Title)
+            //            where duplicateListIDs.Contains(book.ID)
             //            select book;
             //Console.WriteLine(proba.Count());
 
