@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.ComponentModel.Design;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 
 namespace AuthorStarter
 {
@@ -30,8 +34,8 @@ namespace AuthorStarter
 
             Console.WriteLine("Which book has the most authors (and how many)?");
             var orderedListById = from book in listByID
-                                     orderby book.Count()
-                                     select book;
+                                  orderby book.Count()
+                                  select book;
             var dictionaryBooks = orderedListById.ToDictionary(x => x.Key, y => y.Count());
             var bookTitle = from book in books
                             where book.ID == dictionaryBooks.LastOrDefault().Key
@@ -51,17 +55,90 @@ namespace AuthorStarter
             var orderedListByCollaborations = from author in authorsWithCollaborations
                                               orderby author.Count()
                                               select author;
-            Console.WriteLine($"{orderedListByCollaborations.ToList().LastOrDefault().Key} wrote most collaborations." +
-                $" ({orderedListByCollaborations.ToList().LastOrDefault().Count()})");
+            Console.WriteLine($"{orderedListByCollaborations.LastOrDefault().Key} wrote most collaborations." +
+                $" ({orderedListByCollaborations.LastOrDefault().Count()})");
+            Console.WriteLine("------------------------------");
 
-            //var test = from author in authors
-            //           where author.ID == 1735
-            //           from book in author.Books
-            //           select book;
-            //var proba = from book in test.ToList()
-            //            where duplicateListIDs.Contains(book.ID)
-            //            select book;
-            //Console.WriteLine(proba.Count());
+
+            Console.WriteLine("In what year were published most books in a specific genre ? Which genre ?");
+           
+            Console.WriteLine("------------------------------");
+
+
+            Console.WriteLine("Which author has most books nominated for an award?");
+            var nominatedBooks = from author in authors
+                                 from book in author.Books
+                                 where book.Nominations > 0
+                                 group book by author.ID;
+            var nominatedBooksDictionary = nominatedBooks.ToDictionary(x => x.Key, y => y.Count());
+            var orderedNominationDictionary = from author in nominatedBooksDictionary
+                                              orderby author.Value
+                                              select author;
+            var author1Name = from author in authors
+                              where author.ID == orderedNominationDictionary.LastOrDefault().Key
+                              select author.Name;
+            Console.WriteLine($"The author with most nominated books ({orderedNominationDictionary.LastOrDefault().Value})" +
+                $" is {author1Name.FirstOrDefault()}.");
+            Console.WriteLine("------------------------------");
+
+
+            Console.WriteLine("Which auhtor has most books that won an award ?");
+            var winningBooks = from author in authors
+                                 from book in author.Books
+                                 where book.Wins > 0
+                                 group book by author.ID;
+            var winningBooksDictionary = winningBooks.ToDictionary(x => x.Key, y => y.Count());
+            var orderedWinningDictionary = from author in winningBooksDictionary
+                                           orderby author.Value
+                                           select author;
+            var author2Name = from author in authors
+                             where author.ID == orderedWinningDictionary.LastOrDefault().Key
+                             select author.Name;
+            Console.WriteLine($"The author with most winner books ({orderedWinningDictionary.LastOrDefault().Value})" +
+                $" is {author2Name.FirstOrDefault()}.");
+            Console.WriteLine("------------------------------");
+
+
+            Console.WriteLine("Which author has most books nominated for an award, without winning a single award ?");
+            var bookNominationsWithoutWin = from author in authors
+                                            where author.Wins == 0
+                                            from book in author.Books
+                                            where book.Nominations > 0
+                                            group book by author.ID;
+            var bookNominationsWithoutWinDictionary = bookNominationsWithoutWin.ToDictionary(x => x.Key, y => y.Count());
+            var orderedbookNominationsWithoutWin = from author in bookNominationsWithoutWinDictionary
+                                                   orderby author.Value
+                                                   select author;
+            var author3Name = from author in authors
+                              where author.ID == orderedbookNominationsWithoutWin.LastOrDefault().Key
+                              select author.Name;
+            Console.WriteLine($"The author with most nominated books ({orderedbookNominationsWithoutWin.LastOrDefault().Value}) " +
+                $"without a single award is {author3Name.FirstOrDefault()}.");
+            Console.WriteLine("------------------------------");
+
+
+            Console.WriteLine("Make a histogram of books published per decade per genre");
+
+            Console.WriteLine("------------------------------");
+
+
+            Console.WriteLine("Which author has a highest percentage of nominated books?");
+            Console.WriteLine("Tiebreakers: 1)More total books 2)More wins");
+            var authorBooks = from author in authors
+                              select new
+                              {
+                                  AuthorId = author.ID,
+                                  AuthorName = author.Name,
+                                  AuthorBooks = author.Books.Count,
+                                  AuthorNominations = author.Books.Count(book => book.Nominations > 0),
+                                  AuthorWins = author.Wins
+                              };
+            var orderingAuthors = from author in authorBooks
+                                  orderby author.AuthorNominations * 100 / author.AuthorBooks, author.AuthorBooks, author.AuthorWins
+                                  select author;
+            Console.WriteLine($"{orderingAuthors.LastOrDefault().AuthorName} has the highest percentage of nominated books " +
+                $"({orderingAuthors.LastOrDefault().AuthorNominations*100/ orderingAuthors.LastOrDefault().AuthorBooks}%)");
+            
 
             Console.ReadLine();
         }
