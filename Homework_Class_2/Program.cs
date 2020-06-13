@@ -187,49 +187,8 @@ namespace AuthorStarter
             var orderingAuthors = from author in authorBooks
                                   orderby author.AuthorNominations * 100 / author.AuthorBooks, author.AuthorBooks, author.AuthorWins
                                   select author;
-            Console.WriteLine($"{orderingAuthors.LastOrDefault().AuthorName} has the highest percentage of nominated books " +
+            Console.WriteLine($"{orderingAuthors.LastOrDefault().AuthorName} has the highest percentage of nominated books. " +
                 $"({orderingAuthors.LastOrDefault().AuthorNominations * 100 / orderingAuthors.LastOrDefault().AuthorBooks}%)");
-
-
-
-            //var booksByGenreByDecade = genres.Select(g => new
-            //{
-            //    Genre = g,
-            //    Books = books.Where(b => b.Genres.Contains(g)).GroupBy(b => b.Year / 10 * 10).Select(gr => new
-            //    {
-            //        Decade = gr.Key,
-            //        Published = gr.Count()
-            //    }).OrderBy(db => db.Decade)
-            //}).ToDictionary(bgd => bgd.Genre, bgd => bgd.Books);
-
-            //var decades = booksByGenreByDecade.SelectMany(bgd => bgd.Value.Select(bd => bd.Decade)).Distinct().OrderBy(d => d);
-
-            //Console.Write("\t");
-            //foreach (var genre in genres)
-            //{
-            //    Console.Write($"\t{genre}");
-            //}
-            //Console.WriteLine();
-
-            //foreach (var decade in decades)
-            //{
-            //    Console.Write(decade);
-            //    Console.Write("\t\t");
-            //    foreach (var genre in genres)
-            //    {
-            //        var genreBooks = booksByGenreByDecade[genre].FirstOrDefault(bd => bd.Decade == decade);
-            //        if (genreBooks == null)
-            //        {
-            //            Console.Write($"\t ");
-            //        }
-            //        else
-            //        {
-            //            Console.Write($"\t{genreBooks.Published}");
-            //        }
-            //    }
-            //    Console.WriteLine();
-            //}
-
 
             Console.ReadLine();
         }
