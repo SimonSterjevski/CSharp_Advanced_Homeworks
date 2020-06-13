@@ -61,7 +61,22 @@ namespace AuthorStarter
 
 
             Console.WriteLine("In what year were published most books in a specific genre ? Which genre ?");
-           
+            var genres = from Genre genre in Enum.GetValues(typeof(Genre))
+                         select genre;
+            var booksByGenre = from genre in genres
+                               select new
+                               {
+                                   Genre = genre,
+                                   BooksNum = (from book in books
+                                               where book.Genres.Contains(genre)
+                                               group book by book.Year).OrderBy(num => num.Count()).LastOrDefault()
+                               };
+            var orderedBooksByGenre = from pair in booksByGenre
+                                      orderby pair.BooksNum.Count()
+                                      select pair;
+            Console.WriteLine($"In year {orderedBooksByGenre.LastOrDefault().BooksNum.Key}, " +
+                $"{orderedBooksByGenre.LastOrDefault().BooksNum.Count()} books " +
+                $"(Genre:{orderedBooksByGenre.LastOrDefault().Genre}) were published");
             Console.WriteLine("------------------------------");
 
 
@@ -84,16 +99,16 @@ namespace AuthorStarter
 
             Console.WriteLine("Which auhtor has most books that won an award ?");
             var winningBooks = from author in authors
-                                 from book in author.Books
-                                 where book.Wins > 0
-                                 group book by author.ID;
+                               from book in author.Books
+                               where book.Wins > 0
+                               group book by author.ID;
             var winningBooksDictionary = winningBooks.ToDictionary(x => x.Key, y => y.Count());
             var orderedWinningDictionary = from author in winningBooksDictionary
                                            orderby author.Value
                                            select author;
             var author2Name = from author in authors
-                             where author.ID == orderedWinningDictionary.LastOrDefault().Key
-                             select author.Name;
+                              where author.ID == orderedWinningDictionary.LastOrDefault().Key
+                              select author.Name;
             Console.WriteLine($"The author with most winner books ({orderedWinningDictionary.LastOrDefault().Value})" +
                 $" is {author2Name.FirstOrDefault()}.");
             Console.WriteLine("------------------------------");
@@ -118,7 +133,43 @@ namespace AuthorStarter
 
 
             Console.WriteLine("Make a histogram of books published per decade per genre");
-
+            var histogram = from genre in genres
+                            select new
+                            {
+                                Genre = genre,
+                                BooksNum = (from book in books
+                                            where book.Genres.Contains(genre)
+                                            group book by book.Year / 10 * 10).Select(dec => new
+                                            {
+                                                Decade = dec.Key,
+                                                BooksNumber = dec.Count()
+                                            }).OrderBy(pair => pair.Decade)
+                            };
+            var histogramDictionary = histogram.ToDictionary(x => x.Genre, y => y.BooksNum);
+            var decades = histogramDictionary.SelectMany(decad => decad.Value.Select(d => d.Decade));
+            var decadesFiltered = decades.Distinct().OrderBy(decade => decade);
+            foreach (int decade in decadesFiltered)
+            {
+                Console.WriteLine($"{decade} - {decade+9}");
+                foreach (var pair in histogramDictionary)
+                {
+                    Console.Write($"{pair.Key}:");
+                    foreach (var pair1 in pair.Value)
+                    {
+                        if (pair1.Decade == decade)
+                        {
+                            if (pair1.BooksNumber.ToString() == "")
+                            {
+                                Console.WriteLine("0");
+                            } else
+                            {
+                                Console.WriteLine(pair1.BooksNumber);
+                            }
+                            
+                        }
+                    }
+                }
+            }
             Console.WriteLine("------------------------------");
 
 
@@ -137,8 +188,48 @@ namespace AuthorStarter
                                   orderby author.AuthorNominations * 100 / author.AuthorBooks, author.AuthorBooks, author.AuthorWins
                                   select author;
             Console.WriteLine($"{orderingAuthors.LastOrDefault().AuthorName} has the highest percentage of nominated books " +
-                $"({orderingAuthors.LastOrDefault().AuthorNominations*100/ orderingAuthors.LastOrDefault().AuthorBooks}%)");
-            
+                $"({orderingAuthors.LastOrDefault().AuthorNominations * 100 / orderingAuthors.LastOrDefault().AuthorBooks}%)");
+
+
+
+            //var booksByGenreByDecade = genres.Select(g => new
+            //{
+            //    Genre = g,
+            //    Books = books.Where(b => b.Genres.Contains(g)).GroupBy(b => b.Year / 10 * 10).Select(gr => new
+            //    {
+            //        Decade = gr.Key,
+            //        Published = gr.Count()
+            //    }).OrderBy(db => db.Decade)
+            //}).ToDictionary(bgd => bgd.Genre, bgd => bgd.Books);
+
+            //var decades = booksByGenreByDecade.SelectMany(bgd => bgd.Value.Select(bd => bd.Decade)).Distinct().OrderBy(d => d);
+
+            //Console.Write("\t");
+            //foreach (var genre in genres)
+            //{
+            //    Console.Write($"\t{genre}");
+            //}
+            //Console.WriteLine();
+
+            //foreach (var decade in decades)
+            //{
+            //    Console.Write(decade);
+            //    Console.Write("\t\t");
+            //    foreach (var genre in genres)
+            //    {
+            //        var genreBooks = booksByGenreByDecade[genre].FirstOrDefault(bd => bd.Decade == decade);
+            //        if (genreBooks == null)
+            //        {
+            //            Console.Write($"\t ");
+            //        }
+            //        else
+            //        {
+            //            Console.Write($"\t{genreBooks.Published}");
+            //        }
+            //    }
+            //    Console.WriteLine();
+            //}
+
 
             Console.ReadLine();
         }
