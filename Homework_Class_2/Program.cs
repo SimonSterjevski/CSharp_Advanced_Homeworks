@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.Design;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -104,13 +105,28 @@ namespace AuthorStarter
                                group book by author.ID;
             var winningBooksDictionary = winningBooks.ToDictionary(x => x.Key, y => y.Count());
             var orderedWinningDictionary = from author in winningBooksDictionary
-                                           orderby author.Value
+                                           orderby author.Value descending
                                            select author;
-            var author2Name = from author in authors
-                              where author.ID == orderedWinningDictionary.LastOrDefault().Key
-                              select author.Name;
-            Console.WriteLine($"The author with most winner books ({orderedWinningDictionary.LastOrDefault().Value})" +
-                $" is {author2Name.FirstOrDefault()}.");
+            var orderedToList = from auth in orderedWinningDictionary
+                                select auth.Value;
+            var bestScore = orderedToList.First();
+            var winners = from num in orderedToList
+                          where num == bestScore
+                          select num;
+            List<string> authorWinners = new List<string>();
+            foreach (Author author in authors)
+            {
+                for (int i = 0; i < winners.ToList().Count; i++)
+                {
+                    if (author.ID == orderedWinningDictionary.Skip(i).FirstOrDefault().Key)
+                    {
+                        authorWinners.Add(author.Name);
+                    }
+                }
+               
+            }
+            Console.WriteLine($"The authors with most winner books ({orderedWinningDictionary.FirstOrDefault().Value}) are:");
+            authorWinners.ForEach(Console.WriteLine);
             Console.WriteLine("------------------------------");
 
 
@@ -145,29 +161,30 @@ namespace AuthorStarter
                                                 BooksNumber = dec.Count()
                                             }).OrderBy(pair => pair.Decade)
                             };
-            var histogramDictionary = histogram.ToDictionary(x => x.Genre, y => y.BooksNum);
-            var decades = histogramDictionary.SelectMany(decad => decad.Value.Select(d => d.Decade));
+            var histogramDictionary = histogram.ToDictionary(x => x.Genre, y => y.BooksNum.ToDictionary(z => z.Decade, w => w.BooksNumber));
+            var decades = histogramDictionary.SelectMany(decad => decad.Value.Select(d => d.Key));
             var decadesFiltered = decades.Distinct().OrderBy(decade => decade);
             foreach (int decade in decadesFiltered)
             {
-                Console.WriteLine($"{decade} - {decade+9}");
+                Console.WriteLine($"{decade} - {decade + 9}");
                 foreach (var pair in histogramDictionary)
                 {
-                    Console.Write($"{pair.Key}:");
-                    foreach (var pair1 in pair.Value)
+                    if (pair.Value.ContainsKey(decade))
                     {
-                        if (pair1.Decade == decade)
+                        Console.Write($"{pair.Key}:");
+                        foreach (var pair1 in pair.Value)
                         {
-                            if (pair1.BooksNumber.ToString() == "")
+                            if (pair1.Key == decade)
                             {
-                                Console.WriteLine("0");
-                            } else
-                            {
-                                Console.WriteLine(pair1.BooksNumber);
+                                Console.WriteLine(pair1.Value);
                             }
-                            
                         }
                     }
+                    else
+                    {
+                        Console.WriteLine($"{pair.Key}:0");
+                    }
+
                 }
             }
             Console.WriteLine("------------------------------");
@@ -189,6 +206,7 @@ namespace AuthorStarter
                                   select author;
             Console.WriteLine($"{orderingAuthors.LastOrDefault().AuthorName} has the highest percentage of nominated books. " +
                 $"({orderingAuthors.LastOrDefault().AuthorNominations * 100 / orderingAuthors.LastOrDefault().AuthorBooks}%)");
+
 
             Console.ReadLine();
         }
