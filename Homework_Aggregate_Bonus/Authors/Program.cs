@@ -63,29 +63,29 @@ namespace Authors
             //singleordefault via aggregate
             //authors.SingleOrDefault(author => author.Name == "Weronika Laszkiewicz");
 
-            var authorWithSpecificName = authors.Aggregate("", (acc, author) => author.Name == acc ?
+            var authorWithSpecificName = authors.Aggregate( (acc, author) => author.Name == acc.Name ?
             throw new InvalidOperationException("Sequence contains more than one matching element") :
             author.Name == "Weronika Laszkiewicz" ?
-            acc = author.Name : acc);
-            Console.WriteLine(authorWithSpecificName);
+            acc = author : acc);
+            Console.WriteLine(authorWithSpecificName.Name);
 
-            //var authorWithSpecificName1 = authors.Aggregate("", (acc, author) => author.Name == acc ?
+            //var authorWithSpecificName1 = authors.Aggregate( (acc, author) => author.Name == acc.Name ?
             //throw new InvalidOperationException("Sequence contains more than one matching element") :
             //author.Name == "Kimberley McMahon-Coleman" ?
-            //acc = author.Name : acc);
-            //Console.WriteLine(authorWithSpecificName);
+            //acc = author : acc);
+            //Console.WriteLine(authorWithSpecificName1.Name);
 
             //try
             //{
-            //   var authorWithSpecificName = authors.Aggregate("", (acc, author) => author.Name == acc ?
+            //    var authorWithSpecificName2 = authors.Aggregate((acc, author) => author.Name == acc.Name ?
             //   throw new InvalidOperationException("Sequence contains more than one matching element") :
             //   author.Name == "Kimberley McMahon-Coleman" ?
-            //   acc = author.Name : acc);
-            //   Console.WriteLine(authorWithSpecificName);
+            //   acc = author : acc);
+            //    Console.WriteLine(authorWithSpecificName2.Name);
             //}
-            //catch(Exception ex)
+            //catch (Exception ex)
             //{
-            //   Console.WriteLine(ex.Message); 
+            //    Console.WriteLine(ex.Message);
             //};
 
 
