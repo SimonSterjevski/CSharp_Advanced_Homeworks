@@ -63,25 +63,25 @@ namespace Authors
             //singleordefault via aggregate
             //authors.SingleOrDefault(author => author.Name == "Weronika Laszkiewicz");
 
-            var authorWithSpecificName = authors.Aggregate( (acc, author) => author.Name == acc.Name ?
+            var authorWithSpecificName = authors.Aggregate("", (acc, author) => author.Name == acc ?
             throw new InvalidOperationException("Sequence contains more than one matching element") :
             author.Name == "Weronika Laszkiewicz" ?
-            acc = author : acc);
-            Console.WriteLine(authorWithSpecificName.Name);
+            acc = author.Name : acc);
+            Console.WriteLine(authorWithSpecificName);
 
-            //var authorWithSpecificName1 = authors.Aggregate( (acc, author) => author.Name == acc.Name ?
+            //var authorWithSpecificName1 = authors.Aggregate("", (acc, author) => author.Name == acc ?
             //throw new InvalidOperationException("Sequence contains more than one matching element") :
             //author.Name == "Kimberley McMahon-Coleman" ?
-            //acc = author : acc);
-            //Console.WriteLine(authorWithSpecificName1.Name);
+            //acc = author.Name : acc);
+            //Console.WriteLine(authorWithSpecificName1);
 
             //try
             //{
-            //    var authorWithSpecificName2 = authors.Aggregate((acc, author) => author.Name == acc.Name ?
+            //    var authorWithSpecificName2 = authors.Aggregate("", (acc, author) => author.Name == acc ?
             //   throw new InvalidOperationException("Sequence contains more than one matching element") :
             //   author.Name == "Kimberley McMahon-Coleman" ?
-            //   acc = author : acc);
-            //    Console.WriteLine(authorWithSpecificName2.Name);
+            //   acc = author.Name : acc);
+            //    Console.WriteLine(authorWithSpecificName2);
             //}
             //catch (Exception ex)
             //{
