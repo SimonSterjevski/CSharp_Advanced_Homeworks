@@ -8,7 +8,7 @@ namespace BoxingApp
 {
     class Program 
     {
-        public static BoxingMatch match = new BoxingMatch(10);
+        public static BoxingMatch match = new BoxingMatch(50);
         public static Display scoreboard = new Display();
         static List<Boxer> Boxers = new List<Boxer>()
         {
