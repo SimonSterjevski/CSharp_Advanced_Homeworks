@@ -21,28 +21,24 @@ namespace MultiplyApp
             sw.Close();
 
 
-            sw1.WriteLine("  | 01 02 03 04 05 06 07 08 09 ");
+            sw1.WriteLine(" |  1  2  3  4  5  6  7  8  9 ");
             sw1.WriteLine("------------------------------");
             for (int i = 1; i < 10; i++)
             {
                 if (i > 1)
+                {
                     sw1.WriteLine();
+                }
                 string parsed = i.ToString();
-                if (parsed.Length == 1)
-                {
-                    string newParsed = "0" + parsed + "|" + " ";
-                    sw1.Write(newParsed);
-                }
-                else
-                {
-                    sw1.Write($" {i}");
-                }
+                string newParsed = parsed + "|" + " ";
+                sw1.Write(newParsed);
+               
                 for (int j = 1; j < 10; j++)
                 {
                     string result = (i * j).ToString();
                     if (result.Length == 1)
                     {
-                        string newResult = "0" + result + " ";
+                        string newResult = " " + result + " ";
                         sw1.Write(newResult);
                     }
                     else
@@ -55,28 +51,25 @@ namespace MultiplyApp
             sw1.Close();
 
 
-            Console.WriteLine("  | 01 02 03 04 05 06 07 08 09 ");
+
+            Console.WriteLine(" |  1  2  3  4  5  6  7  8  9 ");
             Console.WriteLine("------------------------------");
             for (int i = 1; i < 10; i++)
             {
                 if (i > 1)
+                {
                     Console.WriteLine();
+                }
                 string parsed = i.ToString();
-                if (parsed.Length == 1)
-                {
-                    string newParsed = "0" + parsed + "|" + " ";
-                    Console.Write(newParsed);
-                }
-                else
-                {
-                    Console.Write($" {i}");
-                }
+                string newParsed = parsed + "|" + " ";
+                Console.Write(newParsed);
+
                 for (int j = 1; j < 10; j++)
                 {
                     string result = (i * j).ToString();
                     if (result.Length == 1)
                     {
-                        string newResult = "0" + result + " ";
+                        string newResult = " " + result + " ";
                         Console.Write(newResult);
                     }
                     else
